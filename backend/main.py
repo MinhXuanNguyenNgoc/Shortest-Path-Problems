@@ -58,7 +58,9 @@ def main():
     print("Shortest Path from HCMUT to Sheraton Hotel with Dijkstra: {}".format(dijkstra_path))
     print("Shortest Path from HCMUT to Sheraton Hotel with Belman-Ford: {}".format(belman_path))
 
-    
+    # Step 9: k shortest path using Yen's algorithm
+    yen_result = yen_ksp(matrix,index_hcmut,index_sheraton,3)
+    print(yen_result)
 
 if __name__ == "__main__":
     main()
