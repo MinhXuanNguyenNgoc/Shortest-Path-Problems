@@ -69,3 +69,45 @@ def create_minimum_spanning_tree(nodes):
                     heapq.heappush(min_heap, (new_distance, to_node, j))
 
     return result
+
+def path_to_coordinates(nodes, path):
+    """
+    This will return the coordinates based on the passed matrix indicies
+
+    :param nodes: List of the nodes
+    :param path: Array consisting of matrix indicies
+
+    :return: Array of tuples containing the coordinates
+    """
+    result = []
+
+    for i in path:
+        result.append(get_coordinates_from_matrix_index(nodes, i))
+    
+    return result
+
+def find_node_index(nodes, target_node):
+    """
+    Suche den Index eines Knotenpunkts in der Liste der Knotenpunkte.
+    
+    :param nodes: Liste der Knotenpunkte (Koordinaten)
+    :param target_node: Der gesuchte Knotenpunkt (Koordinaten)
+    :return: Der Index des gesuchten Knotenpunkts oder -1, wenn nicht gefunden
+    """
+    try:
+        return nodes.index(target_node)
+    except ValueError:
+        return -1  # Knotenpunkt nicht gefunden
+
+def get_coordinates_from_matrix_index(nodes, index):
+    """
+    Gibt die Koordinaten eines Knotenpunkts anhand seines Index in der Adjacency-Matrix zurück.
+    
+    :param nodes: Liste der Knotenpunkte (Koordinaten)
+    :param index: Der Index des gesuchten Knotenpunkts in der Adjacency-Matrix
+    :return: Die Koordinaten des Knotenpunkts oder None, wenn der Index ungültig ist
+    """
+    if 0 <= index < len(nodes):
+        return nodes[index]
+    else:
+        return None  # Ungültiger Index
