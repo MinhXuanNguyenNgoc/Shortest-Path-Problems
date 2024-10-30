@@ -2,6 +2,7 @@ import os
 import OSM
 import graph
 import belman_ford
+import debug
 from dijkstra import dijkstra
 from yen import yen_ksp
 
@@ -26,6 +27,10 @@ def main():
     # Step 2: Create edges (minimum spanning tree)
     edges = graph.create_minimum_spanning_tree(nodes)
 
+    # Optional: Visualize Graph
+    #G = debug.debug_create_graph(nodes,edges)
+    #debug.debug_show_graph(G)
+
     # Step 3: Create adjacency matrix
     matrix = graph.create_adjacency_matrix(nodes,edges)
 
@@ -49,7 +54,7 @@ def main():
     print("Shortest Path from HCMUT to Sheraton Hotel with Dijkstra: {}".format(dijkstra_path))
     print("Shortest Path from HCMUT to Sheraton Hotel with Belman-Ford: {}".format(belman_path))
 
-
+    
 
 if __name__ == "__main__":
     main()
