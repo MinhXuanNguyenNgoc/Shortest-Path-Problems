@@ -1,6 +1,7 @@
 # This file contains function to manage the graph theory
 
 import heapq
+import random
 from OSM import calculate_distance
 
 def create_adjacency_matrix(nodes, edges):
@@ -69,6 +70,38 @@ def create_minimum_spanning_tree(nodes):
                     heapq.heappush(min_heap, (new_distance, to_node, j))
 
     return result
+
+def nearest_neighbour(nodes, edges, possibility):
+    """
+    Calculates the two nearest neighbours for "possibility" of nodes
+    E.g. possibility is 0.4 means, the 2 nearest neighbours will be added to 40% of the passed nodes
+    
+    :param nodes: Array of nodes e.g. [(106.5455434,10.4554545),(...)]
+    :param edges: Array of edges e.g. [(start_node,end_node,distance)] 
+    """
+    # Berechnen der Wahrscheinlichkeit % der Knoten
+    num_nodes = len(nodes)
+    num_neighbors = int(num_nodes * possibility)
+
+    # Zufällige Auswahl von 30% der Knoten
+    selected_indices = random.sample(range(num_nodes), num_neighbors)
+
+    # Für jeden Knoten die zwei nächsten Nachbarn finden
+    for i in selected_indices:
+        # Berechnen der Distanzen zu allen anderen Knoten
+        distances = []
+        for j in range(num_nodes):
+            if i != j:  # Nicht zu sich selbst
+                dist = calculate_distance(nodes[i], nodes[j])
+                distances.append((nodes[j], dist))
+        
+        # Sortieren nach Distanz und die zwei nächsten Nachbarn auswählen
+        distances.sort(key=lambda x: x[1])  # Sortieren nach Distanz
+        nearest_neighbors = distances[:2]  # Zwei nächste Nachbarn
+
+        # Kanten zu den nächsten Nachbarn hinzufügen
+        for neighbor in nearest_neighbors:
+            edges.append((nodes[i], neighbor[0], neighbor[1]))
 
 def path_to_coordinates(nodes, path):
     """

@@ -2,7 +2,6 @@ import os
 import OSM
 import graph
 import belman_ford
-import debug
 from dijkstra import dijkstra
 from yen import yen_ksp
 
@@ -24,8 +23,13 @@ def main():
     nodes.append(hcmut_cords)
     nodes.append(sheraton_cords)
 
-    # Step 2: Create edges (minimum spanning tree)
+    # Step 2: Create edges
+    # First we create a minimum spanning tree to make sure, that all nodes are connected with each other
+    # Because we want to have several paths from the start to the end (k-path), a minimum spanning tree would result
+    # in only one path, thus we add one more edges. For this case, I will look for 40% of all nodes for the 2 nearest neighbours 
+    # and create an edge to them too to create several paths.
     edges = graph.create_minimum_spanning_tree(nodes)
+    graph.nearest_neighbour(nodes,edges,0.4)
 
     # Optional: Visualize Graph
     #G = debug.debug_create_graph(nodes,edges)
