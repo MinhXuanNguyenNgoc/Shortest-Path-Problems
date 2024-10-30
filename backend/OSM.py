@@ -62,3 +62,38 @@ def extract_nodes_from_osm_file(osm, input_type='file'):
             intersection_coordinates.append(coordinate)
     return intersection_coordinates
 
+def write_to_csv(result):
+    """
+    This method writes the resulting intersections to a csv file, so it can be displayed for debugging purposes on https://umap.openstreetmap.fr/de/
+
+    :param result: A list of intersections coordinates represented as a string e.g. ["106.54545,50.645645", "107.86745,50.6457455"]
+    """
+    with open('intersectionsNew.csv', 'w', newline='') as file:
+        writer = csv.writer(file)
+        field = ["lat", "lon"]
+
+        writer.writerow(field)
+        for x in result:
+            writer.writerow(x)
+
+
+
+def read_from_csv(path):
+    """
+    This method reads a cvs file with lat,lon coordinates
+
+    :param path: The path where to find the csv file to read from
+
+    :return: A list of coordinates e.g. [(106.5455434,10.4554545),(...)]
+    """
+    nodes = []
+    with open(path, mode ='r') as file:
+        csvFile = csv.reader(file)
+        skip = True
+        for lines in csvFile:
+            if skip:
+                skip = False
+                continue
+            nodes.append((float(lines[0]),float(lines[1])))
+    
+    return nodes
