@@ -2,6 +2,7 @@ import os
 import OSM
 import graph
 import belman_ford
+import time
 from dijkstra import dijkstra
 from yen import yen_ksp
 
@@ -43,22 +44,34 @@ def main():
     index_sheraton = graph.find_node_index(nodes, sheraton_cords)
 
     # Step 5: Dijkstra
+    start_time_dijkstra = time.perf_counter()
     dijkstra_shortest_path_length, dijkstra_visited, dijkstra_path = dijkstra(matrix, index_hcmut, index_sheraton)
+    total_time_dijkstra = time.perf_counter() - start_time_dijkstra
 
     # Step 6: Belman-Ford
+    start_time_belman = time.perf_counter()
     belman_distance, belman_preprocessor = belman_ford.bellman_ford(matrix, index_hcmut)
     belman_path = belman_ford.shortest_path(belman_preprocessor,index_hcmut,index_sheraton)
+    total_time_belman = time.perf_counter() - start_time_belman
 
-    # Step 7: Translate the path to its coordinates
+    # Step 7: Floyd Marshall
+    # TODO: Implement
+
+    # Step 8: Evaluate performance times
+    # TODO: Return the result to the api endpoint
+    print("Performance Dijkstra: {}".format(total_time_dijkstra))
+    print("Performance Belman-Ford: {}".format(total_time_belman))
+
+    # Step 9: Translate the path to its coordinates
     dijkstra_coordinates = graph.path_to_coordinates(nodes,dijkstra_path)
     belman_coordinates = graph.path_to_coordinates(nodes,belman_path)
 
-    # Step 8: Print out results
-    # TODO: Change this to an API Endpoint
+    # Step 10: Print out results
+    # TODO: Return this result to the API Endpoint
     print("Shortest Path from HCMUT to Sheraton Hotel with Dijkstra: {}".format(dijkstra_path))
     print("Shortest Path from HCMUT to Sheraton Hotel with Belman-Ford: {}".format(belman_path))
 
-    # Step 9: k shortest path using Yen's algorithm
+    # Step 11: k shortest path using Yen's algorithm
     yen_result = yen_ksp(matrix,index_hcmut,index_sheraton,3)
     print(yen_result)
 
