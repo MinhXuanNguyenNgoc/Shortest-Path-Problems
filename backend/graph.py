@@ -3,6 +3,30 @@
 import heapq
 from OSM import calculate_distance
 
+def create_adjacency_matrix(nodes, edges):
+    """
+    Creates adjacency matrix based on the passed nodes and edges
+    
+    :param nodes: Array of nodes e.g. [(106.5455434,10.4554545),(...)]
+    :param edges: Array of edges e.g. [(start_node,end_node,distance)]
+
+    :return: 2D-Array representing the nodes and edges List[int][int]
+    """
+    num_nodes = len(nodes)
+    adjacency_matrix = [[0] * num_nodes for _ in range(num_nodes)]
+
+    # Erstelle eine Mapping von Knoten zu Indizes
+    node_to_index = {node: index for index, node in enumerate(nodes)}
+
+    for edge in edges:
+        from_node, to_node, distance = edge
+        from_index = node_to_index[from_node]
+        to_index = node_to_index[to_node]
+        adjacency_matrix[from_index][to_index] = distance
+        adjacency_matrix[to_index][from_index] = distance  # Für ungerichtete Graphen
+
+    return adjacency_matrix
+
 def create_minimum_spanning_tree(nodes):
     """
     Creates a minimum spanning tree using Prim's Algortihm
