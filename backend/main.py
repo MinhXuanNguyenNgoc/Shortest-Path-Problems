@@ -8,7 +8,7 @@ from models.result import SinglePathResultViewModel, MultiplePathsResultViewMode
 from services.utils import adjacency_matrix, nodes, index_hcmut, index_sheraton
 from services import bellman_ford as BellmanFordService
 from services import dijkstra as DijKStraService
-from backend.services import floyd_warshall as FloydWarshallService
+from services import floyd_warshall as FloydWarshallService
 from services import yen as YenService
 
 app = FastAPI()
