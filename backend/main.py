@@ -1,79 +1,73 @@
-import os
-import OSM
-import graph
-import belman_ford
-import time
-from dijkstra import dijkstra
-from yen import yen_ksp
+"""API"""
 
+from fastapi import FastAPI, Query
+from starlette import status
+from typing import List
 
-def main():
-    # Step 1.1: Get the intersections inbetween HCMUT and Sheraton Hotel
-    # Because the Google Map API is not capable to return intersections in an area (and is really expensive), i have used openstreetmaps (OSM) instead
-    # With OSM, I have extracted the intersections with the function "OSM.extract_nodes_from_osm_file"
-    # Because this will result in over 3600 intersections, I had to clean the nodes to get back a total of 107 nodes.
-    # These nodes were saved into the "intersections.csv" file
-    # So we will use this csv file to get the nodes of the intersections 
-    __osm_location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
-    nodes = OSM.read_from_csv(path=os.path.join(__osm_location__, "intersections.csv"))
+from models.result import SinglePathResultViewModel, MultiplePathsResultViewModel
+from services.utils import adjacency_matrix, nodes, index_hcmut, index_sheraton
+from services import bellman_ford as BellmanFordService
+from services import dijkstra as DijKStraService
+from services import floyd_marshall as FloydMarshallService
+from services import yen as YenService
 
-    # Step 1.2: Add hcmut and sheraton coordinates to the nodes
-    # TODO: Instead of hardcoding these coordinates, we can pass them via the api
-    hcmut_cords = (10.772055, 106.657826)
-    sheraton_cords = (10.775440, 106.703864)
-    nodes.append(hcmut_cords)
-    nodes.append(sheraton_cords)
+app = FastAPI()
 
-    # Step 2: Create edges
-    # First we create a minimum spanning tree to make sure, that all nodes are connected with each other
-    # Because we want to have several paths from the start to the end (k-path), a minimum spanning tree would result
-    # in only one path, thus we add one more edges. For this case, I will look for 40% of all nodes for the 2 nearest neighbours 
-    # and create an edge to them too to create several paths.
-    edges = graph.create_minimum_spanning_tree(nodes)
-    graph.nearest_neighbour(nodes,edges,0.4)
+@app.get("/", tags=["Health Check"], status_code=status.HTTP_200_OK, response_model=str)
+async def health_check():
+    """
+    Endpoint for checking the health status of the API service.
 
-    # Optional: Visualize Graph
-    #G = debug.debug_create_graph(nodes,edges)
-    #debug.debug_show_graph(G)
+    Returns:
+        str: A message indicating that the API service is up and running.
 
-    # Step 3: Create adjacency matrix
-    matrix = graph.create_adjacency_matrix(nodes,edges)
+    """
+    return "API Service is up and running!"
 
-    # Step 4: Get index of hcmut and sheraton hotel
-    index_hcmut = graph.find_node_index(nodes, hcmut_cords)
-    index_sheraton = graph.find_node_index(nodes, sheraton_cords)
+@app.get("/dijkstra", tags=["Dijkstra Algorithm"], status_code=status.HTTP_200_OK, response_model=SinglePathResultViewModel)
+async def dijkstra():
+    """
+    Endpoint for getting the result of the Dijkstra algorithm.
 
-    # Step 5: Dijkstra
-    start_time_dijkstra = time.perf_counter()
-    dijkstra_shortest_path_length, dijkstra_visited, dijkstra_path = dijkstra(matrix, index_hcmut, index_sheraton)
-    total_time_dijkstra = time.perf_counter() - start_time_dijkstra
+    Returns:
+        result (SinglePathResultViewModel): Result containing list of coordinates
+        representing the shortest path from HCMUT to Sheraton Hotel.
+    """
+    return DijKStraService.get_shortest_path(adjacency_matrix, nodes, index_hcmut, index_sheraton)
 
-    # Step 6: Belman-Ford
-    start_time_belman = time.perf_counter()
-    belman_distance, belman_preprocessor = belman_ford.bellman_ford(matrix, index_hcmut)
-    belman_path = belman_ford.shortest_path(belman_preprocessor,index_hcmut,index_sheraton)
-    total_time_belman = time.perf_counter() - start_time_belman
+@app.get("/bellman-ford", tags=["Bellman-Ford Algorithm"], status_code=status.HTTP_200_OK, response_model=SinglePathResultViewModel)
+async def bellman_ford():
+    """
+    Endpoint for getting the result of the Bellman-Ford algorithm.
 
-    # Step 7: Floyd Marshall
-    # TODO: Implement
+    Returns:
+        result (SinglePathResultViewModel): Result containing list of coordinates
+        representing the shortest path from HCMUT to Sheraton Hotel.
+    """
+    return BellmanFordService.get_shortest_path(adjacency_matrix, nodes, index_hcmut, index_sheraton)
 
-    # Step 8: Evaluate performance times
-    # TODO: Return the result to the api endpoint
-    print("Performance Dijkstra: {}".format(total_time_dijkstra))
-    print("Performance Belman-Ford: {}".format(total_time_belman))
+@app.get("/floyd-marshall", tags=["Floyd-Marshall Algorithm"], status_code=status.HTTP_200_OK, response_model=SinglePathResultViewModel)
+async def floyd_marshall():
+    """
+    Endpoint for getting the result of the Floyd-Marshall algorithm.
 
-    # Step 9: Translate the path to its coordinates
-    dijkstra_coordinates = graph.path_to_coordinates(nodes,dijkstra_path)
-    belman_coordinates = graph.path_to_coordinates(nodes,belman_path)
+    Returns:
+        result (SinglePathResultViewModel): Result containing list of coordinates
+        representing the shortest path from HCMUT to Sheraton Hotel.
+    """
+    return FloydMarshallService.get_shortest_path(adjacency_matrix, nodes, index_hcmut, index_sheraton)
 
-    # Step 10: Print out results
-    # TODO: Return this result to the API Endpoint
-    print("Shortest Path from HCMUT to Sheraton Hotel with Dijkstra: {}".format(dijkstra_path))
-    print("Shortest Path from HCMUT to Sheraton Hotel with Belman-Ford: {}".format(belman_path))
+@app.get("/yen", tags=["Yen Algorithm"], status_code=status.HTTP_200_OK, response_model=MultiplePathsResultViewModel)
+async def yen(k: int = Query(ge=1, le=100, default=5)):
+    """
+    Endpoint for getting the result of the Yen algorithm.
 
-    # Step 11: k shortest path using Yen's algorithm
-    yen_result = yen_ksp(matrix,index_hcmut,index_sheraton,3)
-    print(yen_result)
+    Parameters:
+        k (int): The number of shortest paths to compute, between 1 and 100,
+        with a default value of 5.
 
-if __name__ == "__main__":
-    main()
+    Returns:
+        result (MultiplePathsResultViewModel): Result containing list of list of
+        coordinates representing K shortest paths from HCMUT to Sheraton Hotel.
+    """
+    return YenService.get_shortest_path(adjacency_matrix, nodes, index_hcmut, index_sheraton, k)
