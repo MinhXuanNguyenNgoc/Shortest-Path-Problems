@@ -52,6 +52,8 @@ def yen_ksp(adjacency_matrix: List[List[int]], source: int, sink: int, K: int) -
     Raises:
     ValueError: If the adjacency matrix is not square or if the source or sink index is out of bounds.
     """
+    # Step 0: Create a copy of the adjacency matrix to not change the original matrix
+    adjacency_matrix = [row[:] for row in adjacency_matrix]
     # Step 1: Determine the shortest path from the source to the sink
     length, visited_vertices, path = dijkstra(adjacency_matrix, source, sink)
     A = [path]  # Store only the path
