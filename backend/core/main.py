@@ -54,7 +54,7 @@ def main():
     belman_path = belman_ford.shortest_path(belman_preprocessor,index_hcmut,index_sheraton)
     total_time_belman = time.perf_counter() - start_time_belman
 
-    # Step 7: Floyd Marshall
+    # Step 7: Floyd Warshall
     # TODO: Implement
 
     # Step 8: Evaluate performance times

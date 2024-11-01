@@ -8,7 +8,7 @@ from models.result import SinglePathResultViewModel, MultiplePathsResultViewMode
 from services.utils import adjacency_matrix, nodes, index_hcmut, index_sheraton
 from services import bellman_ford as BellmanFordService
 from services import dijkstra as DijKStraService
-from services import floyd_marshall as FloydMarshallService
+from backend.services import floyd_warshall as FloydWarshallService
 from services import yen as YenService
 
 app = FastAPI()
@@ -46,16 +46,16 @@ async def bellman_ford():
     """
     return BellmanFordService.get_shortest_path(adjacency_matrix, nodes, index_hcmut, index_sheraton)
 
-@app.get("/floyd-marshall", tags=["Floyd-Marshall Algorithm"], status_code=status.HTTP_200_OK, response_model=SinglePathResultViewModel)
-async def floyd_marshall():
+@app.get("/floyd-warshall", tags=["Floyd-Warshall Algorithm"], status_code=status.HTTP_200_OK, response_model=SinglePathResultViewModel)
+async def floyd_warshall():
     """
-    Endpoint for getting the result of the Floyd-Marshall algorithm.
+    Endpoint for getting the result of the Floyd-Warshall algorithm.
 
     Returns:
         result (SinglePathResultViewModel): Result containing list of coordinates
         representing the shortest path from HCMUT to Sheraton Hotel.
     """
-    return FloydMarshallService.get_shortest_path(adjacency_matrix, nodes, index_hcmut, index_sheraton)
+    return FloydWarshallService.get_shortest_path(adjacency_matrix, nodes, index_hcmut, index_sheraton)
 
 @app.get("/yen", tags=["Yen Algorithm"], status_code=status.HTTP_200_OK, response_model=MultiplePathsResultViewModel)
 async def yen(k: int = Query(ge=1, le=100, default=5)):
