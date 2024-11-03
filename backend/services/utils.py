@@ -10,14 +10,6 @@ def write_matrix_to_csv(matrix: List[List[float]], path: str) -> None:
         for row in matrix:
             writer.writerow(row)
 
-def read_matrix_from_csv(path: str) -> List[List[float]]:
-    matrix = []
-    with open(path, 'r') as file:
-        reader = csv.reader(file)
-        for row in reader:
-            matrix.append([float(value) for value in row]) 
-    return matrix
-
 def read_nodes_from_csv(path: str) -> List[Tuple[float, float]]:
     nodes = []
     with open(path, mode ='r') as file:
@@ -31,6 +23,26 @@ def read_nodes_from_csv(path: str) -> List[Tuple[float, float]]:
     
     return nodes
 
+def read_edges_from_csv(path: str) -> List[Tuple[Tuple[float, float], Tuple[float, float], float]]:
+    edges = []
+    with open(path, mode='r') as file:
+        csv_reader = csv.reader(file)
+        next(csv_reader)
+        for line in csv_reader:
+            coord1 = (float(line[0]), float(line[1]))
+            coord2 = (float(line[2]), float(line[3]))
+            distance = float(line[4])
+            edges.append((coord1, coord2, distance))
+    return edges
+
+def read_matrix_from_csv(path: str) -> List[List[float]]:
+    matrix = []
+    with open(path, 'r') as file:
+        reader = csv.reader(file)
+        for row in reader:
+            matrix.append([float(value) for value in row]) 
+    return matrix
+
 def find_node_index(nodes: List[Tuple[float, float]], target_node: Tuple[float, float]) -> int:
     try:
         return nodes.index(target_node)
@@ -40,7 +52,7 @@ def find_node_index(nodes: List[Tuple[float, float]], target_node: Tuple[float, 
 def get_coordinates_from_matrix_index(nodes: List[tuple], index: int) -> Optional[Coordinate]:
     if 0 <= index < len(nodes):
         latitude, longitude = nodes[index]
-        return Coordinate(latitude, longitude)
+        return Coordinate(index, latitude, longitude)
     else:
         return None
 
@@ -60,8 +72,9 @@ def path_to_coordinates(nodes: List[tuple], path: List[int]) -> List[Coordinate]
     
     return result
 
-adjacency_matrix = read_matrix_from_csv(os.path.join(os.getcwd(), "data", "adjacency_matrix.csv"))
 nodes = read_nodes_from_csv(os.path.join(os.getcwd(), "data", "intersections.csv"))
+edges = read_edges_from_csv(os.path.join(os.getcwd(), "data", "edges.csv"))
+adjacency_matrix = read_matrix_from_csv(os.path.join(os.getcwd(), "data", "adjacency_matrix.csv"))
 
 hcmut_cords = (10.772055, 106.657826)
 sheraton_cords = (10.775440, 106.703864)
