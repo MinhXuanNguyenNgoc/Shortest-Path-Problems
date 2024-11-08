@@ -102,6 +102,25 @@ def yen_ksp(adjacency_matrix: List[List[int]], source: int, sink: int, K: int) -
 
     return A
 
+def yen_path_distance(
+        adjacency_matrix: List[List[int]],
+        path: List[int]
+) -> int:
+    """
+    Lookup function to calculate the distance a resulting path from the yen algorithm needed
+
+    Parameters:
+    adjacency_matrix (List[List[int]]): The adjacency matrix representing the graph.
+    path (List[int]): The nodes of the path
+
+    :return: int representing the total distance for the passed path
+    """
+    total_distance = 0
+    for index in range(1,len(path)):
+        total_distance += adjacency_matrix[path[index-1]][path[index]]
+
+    return total_distance
+
 def get_shortest_path(
     adjacency_matrix: List[List[int]], 
     nodes: List[Tuple[float, float]], 
@@ -116,6 +135,6 @@ def get_shortest_path(
     paths = []
     for path in path_list:
         coordinates = path_to_coordinates(nodes, path)
-        paths.append(Path(coordinates, 0))
+        paths.append(Path(coordinates, yen_path_distance(adjacency_matrix,path)))
     
     return MultiplePathsResult(paths, total_time)
