@@ -94,5 +94,5 @@ def get_shortest_path(
     
     coordinates = path_to_coordinates(nodes, path)
     
-    return SinglePathResult(Path(coordinates, 0), elapsed_time)
+    return SinglePathResult(Path(coordinates, distance[destination_vertex]), elapsed_time)
     
