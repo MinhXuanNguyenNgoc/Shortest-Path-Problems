@@ -39,7 +39,7 @@ uvicorn main:app --reload
 ```
 
 - Go to `http://localhost:8000/docs` to see the documentation of the API
-Frontend
+###Frontend
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
@@ -52,6 +52,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 - **Leaflet**: For interactive map visualizations
 - **Tailwind CSS**: For styling
 - **Axios**: For making API requests to the backend
+- **Leaflet**: For displaying map
 
 ---
 
@@ -72,6 +73,8 @@ Install dependencies:
 
 ```bash
 npm install
+npm i react-leaflet
+npm i axios
 ```
 
 First, run the development server:
