@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from starlette import status
 from fastapi.middleware.cors import CORSMiddleware
 from routers import bellman_ford, dijkstra, floyd_warshall, yen, graph
+import os  # Import os to access environment variables
 
 app = FastAPI()
 app.add_middleware(
@@ -32,4 +33,5 @@ async def health_check():
     return "API Service is up and running!"
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    port = int(os.environ.get("PORT", 8000))  # Use the PORT environment variable or default to 8000
+    uvicorn.run(app, host="0.0.0.0", port=port)
