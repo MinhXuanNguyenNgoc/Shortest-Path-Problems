@@ -9,6 +9,7 @@ export const getShortestPath = async (algorithm, source, destination, k = 5) => 
     bellmanFord: `/bellman-ford?source_vertex=${source}&destination_vertex=${destination}`,
     floydWarshall: `/floyd-warshall?source_vertex=${source}&destination_vertex=${destination}`,
     yen: `/yen?source_vertex=${source}&destination_vertex=${destination}&k=${k}`,
+    
   };
 
   try {
@@ -18,5 +19,14 @@ export const getShortestPath = async (algorithm, source, destination, k = 5) => 
   } catch (error) {
     console.error(`Error fetching data from ${algorithm} endpoint:`, error);
     return null; // Return null if there's an error
+  }
+};
+export const getGraphData = async () => {
+  try {
+    const response = await axios.get("http://localhost:8000/graph");
+    return response.data.result; // Returns the graph data including vertices and edges
+  } catch (error) {
+    console.error("Error fetching graph data:", error);
+    return null;
   }
 };
