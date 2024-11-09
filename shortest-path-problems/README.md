@@ -1,6 +1,78 @@
+# Shortest-Path-Problems
+
+This project visualizes the shortest path between selected points on a map using various algorithms, including Dijkstra, Bellman-Ford, Floyd-Warshall, and Yen's K-shortest paths algorithm. Built with Next.js, Leaflet, and Tailwind CSS, this application allows users to select different algorithms and see the shortest path or multiple shortest paths displayed on a map.
+
+## Team Members
+- **2470475** - Krebs Luca Felix
+- **2470477** - Onuh Izuchukwu Justus
+- **2470473** - Nguyen Ngoc Minh Xuan
+- **2470466** - Pham Le Minh
+- **2470468** - Duong Thanh Khuong
+
+## Lecturers
+- Tran Tuan Anh, Ph.D
+- Nguyen An Khuong, Ph.D
+
+## API | Backend
+
+- Create a virtual environment using `virtualenv` module in python.
+
+```bash
+# Install module (globally)
+pip install virtualenv
+sudo apt install python3-virtualenv
+
+# Generate virtual environment
+virtualenv --python=<your-python-runtime-version> venv
+
+# Activate virtual environment
+source venv/bin/activate
+
+# Install depdendency packages
+pip install -r requirements.txt
+```
+
+- Run `uvicorn` web server from `backend` directory (`reload` mode is for development purposes)
+
+```bash
+uvicorn main:app --reload
+```
+
+- Go to `http://localhost:8000/docs` to see the documentation of the API
+Frontend
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
+## Project Link
+[GitHub Repository](https://github.com/MinhXuanNguyenNgoc/Shortest-Path-Problems.git)
+
+## Technologies Used
+- **Next.js**: For server-side rendering and React framework
+- **Leaflet**: For interactive map visualizations
+- **Tailwind CSS**: For styling
+- **Axios**: For making API requests to the backend
+
+---
+
+## Getting Started
+
+### Prerequisites
+Ensure you have the following installed:
+- **Node.js** (version 14 or higher)
+- **npm** (usually comes with Node.js)
+
+### Installation
+
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/MinhXuanNguyenNgoc/Shortest-Path-Problems.git
+   cd Shortest-Path-Problems
+Install dependencies:
+
+```bash
+npm install
+```
 
 First, run the development server:
 
